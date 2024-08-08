@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CiteWise</title>
+        <style>
+            body, html {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                font-family: Arial, sans-serif;
+                overflow-x: hidden;
+                overflow-y: auto;
+                scroll-behavior: smooth;
+            }
+            .background {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: #000033;
+                overflow: hidden;
+                z-index: -1;
+            }
+            .dot {
+                position: absolute;
+                background-color: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+            }
+            .content-wrapper {
+                position: relative;
+                text-align: center;
+                width: 90%;
+                max-width: 600px;
+                margin: 50px auto;
+                padding-bottom: 50px;
+            }
+            .title {
+                color: white;
+                font-size: clamp(36px, 10vw, 64px);
+                margin-bottom: 10px;
+                background: linear-gradient(45deg, #ff00ff, #00ffff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .glass-effect {
+                width: 100%;
+                height: auto;
+                min-height: 200px;
+                padding: 40px;
+                background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border-radius: 15px;
+                border: 1px solid rgba(255,255,255,0.18);
+                box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                transition: background 0.3s ease;
+                box-sizing: border-box;
+            }
+            #typewriter {
+                color: #b6b5b5;
+                font-size: clamp(16px, 3vw, 18px);
+                text-align: center;
+                flex-grow: 1;
+                overflow: hidden;
+                margin-bottom: 20px;
+            }
+            #typewriter .highlight {
+                color: #21b821;
+            }
+            .button-wrapper {
+                text-align: center;
+            }
+            .button {
+                display: inline-block;
+                padding: 10px 20px;
+                background: #000033;
+                color: rgba(234, 229, 229, 0.647);
+                text-decoration: none;
+                border-radius: 5px;
+                font-size: clamp(14px, 3vw, 18px);
+                transition: all 0.3s;
+                position: relative;
+                overflow: hidden;
+            }
+            .button::after {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0));
+                transform: rotate(30deg);
+                transition: all 0.3s;
+            }
+            .button:hover::after {
+                transform: rotate(30deg) translate(50%, 50%);
+            }
+            .subtitle {
+                color: #e0e0e0;
+                font-size: clamp(20px, 5vw, 28px);
+                margin-top: 30px;
+                margin-bottom: 20px;
+                text-align: left;
+            }
+            .description {
+                color: #b6b5b5;
+                font-size: clamp(14px, 2.5vw, 16px);
+                text-align: justify;
+                margin-bottom: 30px;
+            }
+            .image-container {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 30px;
+            }
+            .image-placeholder {
+                width: 32%;
+                aspect-ratio: 1 / 1;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            }
+            .image-placeholder2 {
+                width: 80%;
+                aspect-ratio: 1 / 1;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            }
+            .image-placeholder img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .glow {
+                animation: glow 2s ease-in-out infinite alternate;
+            }
+            @keyframes glow {
+                from {
+                    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+                }
+                to {
+                    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+                }
+            }
+            .toolkit-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: stretch;
+                margin-bottom: 30px;
+                background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border-radius: 15px;
+                border: 1px solid rgba(255,255,255,0.18);
+                box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+                overflow: hidden;
+            }
+            .toolkit-content {
+                flex: 1;
+                padding: 20px;
+            }
+            .toolkit-item .image-placeholder {
+                width: 20%;
+                height: auto;
+                flex-shrink: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .toolkit-item h3 {
+                color: #e0e0e0;
+                font-size: clamp(18px, 4vw, 24px);
+                margin-top: 0;
+            }
+            .toolkit-item p {
+                color: #b6b5b5;
+                font-size: clamp(14px, 2.5vw, 16px);
+                text-align: justify;
+            }
+            .video-placeholder {
+                width: 100%;
+                max-width: 600px;
+                margin: 30px auto;
+            }
+            .video-placeholder video {
+                width: 100%;
+                height: auto;
+                border-radius: 15px;
+            }
+            .workload-section {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 30px;
+                background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border-radius: 15px;
+                border: 1px solid rgba(255,255,255,0.18);
+                box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+                overflow: hidden;
+            }
+            .workload-section .image-placeholder {
+                width: 20%;
+                height: auto;
+                flex-shrink: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .workload-section .description {
+                flex: 1;
+                padding: 20px;
+                margin-bottom: 0;
+                text-align: justify;
+            }
+            .toolkit-item .image-placeholder img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .workload-reduction {
+    flex-direction: column;
+}
+
+.workload-reduction .top-image {
+    width: 100%;
+    height: 130px;
+}
+
+.workload-reduction .top-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.workload-reduction .toolkit-content {
+    padding: 20px;
+}
+@media (max-width: 600px) {
+    .description, .toolkit-item p, .workload-section .description {
+        text-align: left;
+    }
+}
+        </style>
+    </head>
+<body>
+    <div class="background" id="background"></div>
+    <div class="content-wrapper">
+        <h1 class="title">Supercharge your research.</h1>
+        <div class="glass-effect" id="glass-effect">
+            <div id="typewriter"></div>
+            <div class="button-wrapper">
+                <a href="toolkitspage.html" class="button">Goto Toolkits</a>
+            </div>
+        </div>
+        <h2 class="subtitle">Your research sidekick</h2>
+        <p class="description">
+            CiteWise is more than just a run-of-the-mill research assistant; it's a dynamic suite of tools designed to empower researchers across disciplines. Whether you're a seasoned professor, or a curious grad student, CiteWise has your back.<br><br>
+            Inspired by the brilliant minds of researchers who've pondered the mysteries of multiverse muffins (or not). 🧁
+        </p>
+        <div class="image-container">
+            <div class="image-placeholder glow"><img src="img1.png" alt="CiteWise feature 1"></div>
+            <div class="image-placeholder glow"><img src="img2.png" alt="CiteWise feature 2"></div>
+            <div class="image-placeholder glow"><img src="img3.png" alt="CiteWise feature 3"></div>
+        </div>
+        <h2 class="subtitle">The Toolkit Trio</h2>
+        <p class="description"> logicquill generates language independent pseudocodes. Literafy writes you 5000+ word literature review of 20 research papers. And 
+            IdeoSynth formulates your research idea properly. Allow us to exaggerate a bit in mythical terms.
+        </p>
+        <div class="video-placeholder">
+            <video autoplay loop muted playsinline>
+                <source src="vid (1).mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="toolkit-item">
+            <div class="toolkit-content">
+                <h3>LogicQuill</h3>
+                <p class="description">
+                    LogicQuill transcends the mundane boundaries of programming languages. It is not merely a pseudocode generator; it is the Gandalf of algorithmic expression—a wizard fluent in the universal language of logic.
+                    Whether you're deciphering quantum entanglement or optimizing your morning toast-making routine, LogicQuill weaves elegant pseudocode spells that resonate across disciplinary borders.
+                </p>
+            </div>
+            <div class="image-placeholder"><img src="img5.jpg" alt="LogicQuill feature"></div>
+        </div>
+        <div class="toolkit-item">
+            <div class="toolkit-content">
+                <h3>Literafy</h3>
+                <p class="description">
+                    Picture this: You're knee-deep in research ideas, drowning in a sea of PDFs, and your bibliography resembles a chaotic Jackson Pollock painting. Enter Literafy, the bibliographic bard. It reads your mind (basically your research title), 
+                    weaves a comprehensive literature review spanning 20 research ideas, and elegantly cites every source. Also, gives a PDF that's more organized than a Swiss watchmaker's workshop.
+                </p>
+            </div>
+            <div class="image-placeholder"><img src="img6.jpg" alt="Literafy feature"></div>
+        </div>
+        <div class="toolkit-item">
+            <div class="toolkit-content">
+                <h3>IdeoSynth</h3>
+                <p class="description">
+                    Every researcher knows the agony of a lackluster title. IdeoSynth transforms rough ideas into golden titles. Got a half-baked hypothesis about time-traveling squirrels? 
+                    IdeoSynth serves up ten alternatives, each more captivating than the last. Suddenly, your paper on "Rodent Temporal Mechanics" becomes "Chrono-Rodentology: Navigating the Continuum."
+                </p>
+            </div>
+            <div class="image-placeholder"><img src="img7.jpg" alt="IdeoSynth feature"></div>
+        </div>
+
+        <h2 class="subtitle">Reducing Workload, Amplifying Insights</h2>
+<div class="toolkit-item workload-reduction">
+    <div class="image-placeholder top-image">
+        <img src="img4.png" alt="Workload Reduction">
+    </div>
+    <div class="toolkit-content">
+        <p class="description">
+            As undergrad amateur builders, our days are a delicate dance between curiosity and deadlines. We yearn for that elusive eureka moment 
+            while juggling data, hypotheses, and the occasional existential crisis. We built LogicQuill, Literafy, and IdeoSynth—the first three stars in our constellation of research tools,
+            in a span of 1 month, continuously updating and tuning to make it better. But that's not the end.<br><br>
+            Every repetitive workload can be automated. Or some complex workloads can be made more efficient. That's fundamental, and that's what we are building upon. Particular
+            research problem you want a solution of? We will def see through it. Throw us a mail at citewise@gmail.com<br><br>
+            These are but our first steps. More toolkits await—each fine-tuned, each designed to amplify your insights. 
+            We're working, grinding, and sipping metaphorical double-shot espressos. Let's build together. Starting small. One at a time.
+        </p>
+    </div>
+</div>
+    <script>
+        // Animated background
+        function createDots() {
+            const background = document.getElementById('background');
+            for (let i = 0; i < 100; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                dot.style.width = `${Math.random() * 5 + 2}px`;
+                dot.style.height = dot.style.width;
+                background.appendChild(dot);
+
+                animateDot(dot);
+            }
+        }
+
+        function animateDot(dot) {
+            const duration = Math.random() * 3000 + 2000;
+            const keyframes = [
+                { transform: 'translate(0, 0)' },
+                { transform: `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)` }
+            ];
+            const animation = dot.animate(keyframes, {
+                duration: duration,
+                iterations: Infinity,
+                direction: 'alternate',
+                easing: 'ease-in-out'
+            });
+        }
+
+        // Typewriter effect
+        const sentences = [
+            "CiteWise provides advanced toolkits for brainstorming and paper writing. Reduce your research workloads from hours and days to <span class='highlight'>minutes</span>",
+        ];
+
+        let sentenceIndex = 0;
+        let charIndex = 0;
+        let typingSpeed = 20;
+
+        function typeWriter() {
+            const currentSentence = sentences[sentenceIndex];
+            const typewriterElement = document.getElementById('typewriter');
+
+            if (charIndex < currentSentence.length) {
+                if (currentSentence.substr(charIndex, 6) === "<span ") {
+                    const endIndex = currentSentence.indexOf("</span>", charIndex) + 7;
+                    typewriterElement.innerHTML += currentSentence.substring(charIndex, endIndex);
+                    charIndex = endIndex;
+                } else {
+                    typewriterElement.innerHTML += currentSentence.charAt(charIndex);
+                    charIndex++;
+                }
+                setTimeout(typeWriter, typingSpeed);
+            }
+        }
+
+        // Hover effect
+        const glassEffect = document.getElementById('glass-effect');
+        glassEffect.addEventListener('mousemove', (e) => {
+            const rect = glassEffect.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            glassEffect.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.2), rgba(255,255,255,0.1) 40%, rgba(255,255,255,0) 60%)`;
+        });
+
+        glassEffect.addEventListener('mouseleave', () => {
+            glassEffect.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0))';
+        });
+
+        // Initialize
+        createDots();
+        typeWriter();
+    </script>
+</body>
+</html>
